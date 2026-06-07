@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.DS_Store
+backend/data/*.json
+backend/uploads/*
+!backend/uploads/.gitkeep
+coverage/
+.terraform/
+*.tfstate
+*.tfstate.backup

@@ -1,0 +1,49 @@
+pipeline {
+  agent any
+
+  environment {
+    REGISTRY = 'resume-screening'
+  }
+
+  stages {
+    stage('Install Backend') {
+      steps {
+        dir('backend') {
+          sh 'npm ci || npm install'
+        }
+      }
+    }
+
+    stage('Install Frontend') {
+      steps {
+        dir('frontend') {
+          sh 'npm ci || npm install'
+        }
+      }
+    }
+
+    stage('Quality Gates') {
+      steps {
+        dir('frontend') {
+          sh 'npm run build'
+        }
+      }
+    }
+
+    stage('Build Images') {
+      steps {
+        sh 'docker build -t $REGISTRY/backend:$BUILD_NUMBER backend'
+        sh 'docker build -t $REGISTRY/frontend:$BUILD_NUMBER frontend'
+      }
+    }
+
+    stage('Deploy Kubernetes') {
+      when {
+        branch 'main'
+      }
+      steps {
+        sh 'kubectl apply -f kubernetes/'
+      }
+    }
+  }
+}
