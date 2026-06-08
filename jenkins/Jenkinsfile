@@ -1,49 +1,86 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    REGISTRY = 'resume-screening'
-  }
+    environment {
+        REGISTRY = 'resume-screening'
+        BUCKET_NAME = 'srs-platform'
+        DISTRIBUTION_ID = 'E1ZNEVRM25MXPD'
+    }
 
-  stages {
-    stage('Install Backend') {
-      steps {
-        dir('backend') {
-          sh 'npm ci || npm install'
+    stages {
+
+        stage('Install Backend') {
+            steps {
+                dir('backend') {
+                    sh 'npm ci || npm install'
+                }
+            }
         }
-      }
-    }
 
-    stage('Install Frontend') {
-      steps {
-        dir('frontend') {
-          sh 'npm ci || npm install'
+        stage('Install Frontend') {
+            steps {
+                dir('frontend') {
+                    sh 'npm ci || npm install'
+                }
+            }
         }
-      }
-    }
 
-    stage('Quality Gates') {
-      steps {
-        dir('frontend') {
-          sh 'npm run build'
+        stage('Build Frontend') {
+            steps {
+                dir('frontend') {
+                    sh 'npm run build'
+                }
+            }
         }
-      }
-    }
 
-    stage('Build Images') {
-      steps {
-        sh 'docker build -t $REGISTRY/backend:$BUILD_NUMBER backend'
-        sh 'docker build -t $REGISTRY/frontend:$BUILD_NUMBER frontend'
-      }
-    }
+        stage('Deploy Frontend to S3') {
+            when {
+                branch 'main'
+            }
+            steps {
+                dir('frontend') {
+                    sh '''
+                    aws s3 sync dist/ s3://$BUCKET_NAME --delete
+                    '''
+                }
+            }
+        }
 
-    stage('Deploy Kubernetes') {
-      when {
-        branch 'main'
-      }
-      steps {
-        sh 'kubectl apply -f kubernetes/'
-      }
+        stage('Invalidate CloudFront Cache') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh '''
+                aws cloudfront create-invalidation \
+                --distribution-id $DISTRIBUTION_ID \
+                --paths "/*"
+                '''
+            }
+        }
+
+        stage('Build Backend Image') {
+            steps {
+                sh 'docker build -t $REGISTRY/backend:$BUILD_NUMBER backend'
+            }
+        }
+
+        stage('Deploy Backend Container') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh '''
+                docker stop resume-backend || true
+                docker rm resume-backend || true
+
+                docker run -d \
+                  --name resume-backend \
+                  -p 5000:5000 \
+                  --restart unless-stopped \
+                  $REGISTRY/backend:$BUILD_NUMBER
+                '''
+            }
+        }
     }
-  }
 }
