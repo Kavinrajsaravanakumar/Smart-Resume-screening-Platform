@@ -3,7 +3,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_BASE_URL ||
-    "https://d2qqrv66fla67.cloudfront.net/",
+    "https://d2qqrv66fla67.cloudfront.net/api",
   timeout: 30000,
 });
 
