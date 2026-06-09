@@ -60,18 +60,19 @@ pipeline {
         }
 
         stage('Deploy Backend Container') {
-            steps {
-                sh '''
-                docker stop resume-backend || true
-                docker rm resume-backend || true
+          steps {
+              sh '''
+              docker stop resume-backend || true
+              docker rm resume-backend || true
 
-                docker run -d \
-                  --name resume-backend \
-                  -p 5000:5000 \
-                  --restart unless-stopped \
-                  $REGISTRY/backend:$BUILD_NUMBER
-                '''
-            }
+              docker run -d \
+                --name resume-backend \
+                -p 5000:5000 \
+                --restart unless-stopped \
+                -e FRONTEND_ORIGIN=https://d1szubkdu6leol.cloudfront.net \
+                $REGISTRY/backend:$BUILD_NUMBER
+              '''
+          }
         }
     }
 
