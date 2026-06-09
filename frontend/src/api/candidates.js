@@ -16,9 +16,7 @@ export async function deleteCandidate(id) {
 }
 
 export async function uploadResume(formData) {
-  const { data } = await api.post('/resumes/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
+  const { data } = await api.post('/resumes/upload', formData);
   return data;
 }
 

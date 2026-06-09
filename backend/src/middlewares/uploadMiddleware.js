@@ -5,11 +5,6 @@ import config from '../config/index.js';
 
 fs.mkdirSync(config.uploadDir, { recursive: true });
 
-const allowedMimeTypes = new Set([
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-]);
-
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, config.uploadDir),
   filename: (_req, file, cb) => {
@@ -24,7 +19,7 @@ const upload = multer({
   fileFilter: (_req, file, cb) => {
     const extension = path.extname(file.originalname).toLowerCase();
     const validExtension = extension === '.pdf' || extension === '.docx';
-    if (!allowedMimeTypes.has(file.mimetype) || !validExtension) {
+    if (!validExtension) {
       return cb(new Error('Only PDF and DOCX resume files are allowed.'));
     }
     return cb(null, true);

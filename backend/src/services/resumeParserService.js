@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import path from 'path';
 import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
 import Tesseract from 'tesseract.js';
@@ -193,7 +194,9 @@ async function extractWithOcrFallback(filePath) {
 
 const resumeParserService = {
   async extractCandidateInfo(filePath, mimeType) {
-    let text = mimeType === 'application/pdf' ? await extractPdf(filePath) : await extractDocx(filePath);
+    const extension = path.extname(filePath).toLowerCase();
+    const isPdf = extension === '.pdf' || (extension !== '.docx' && mimeType === 'application/pdf');
+    let text = isPdf ? await extractPdf(filePath) : await extractDocx(filePath);
     if (!text || text.trim().length < 80) {
       text = `${text || ''}\n${await extractWithOcrFallback(filePath)}`.trim();
     }
