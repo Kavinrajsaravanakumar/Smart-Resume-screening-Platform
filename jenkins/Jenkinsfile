@@ -34,9 +34,6 @@ pipeline {
         }
 
         stage('Deploy Frontend to S3') {
-            when {
-                branch 'main'
-            }
             steps {
                 dir('frontend') {
                     sh '''
@@ -47,9 +44,6 @@ pipeline {
         }
 
         stage('Invalidate CloudFront Cache') {
-            when {
-                branch 'main'
-            }
             steps {
                 sh '''
                 aws cloudfront create-invalidation \
@@ -66,9 +60,6 @@ pipeline {
         }
 
         stage('Deploy Backend Container') {
-            when {
-                branch 'main'
-            }
             steps {
                 sh '''
                 docker stop resume-backend || true
@@ -81,6 +72,15 @@ pipeline {
                   $REGISTRY/backend:$BUILD_NUMBER
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
