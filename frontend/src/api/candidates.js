@@ -10,6 +10,11 @@ export async function fetchCandidate(id) {
   return data;
 }
 
+export async function fetchCandidateResume(id) {
+  const { data } = await api.get(`/candidates/${id}/resume`);
+  return data;
+}
+
 export async function deleteCandidate(id) {
   const { data } = await api.delete(`/candidates/${id}`);
   return data;

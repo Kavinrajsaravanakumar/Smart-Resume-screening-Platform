@@ -9,9 +9,9 @@ data:
   FRONTEND_ORIGIN: "*"
   JWT_SECRET: change-this-production-secret
   JWT_EXPIRES_IN: 8h
-  UPLOAD_DIR: uploads
   MAX_FILE_SIZE_MB: "5"
-  STORAGE_DRIVER: dynamodb
+  CACHE_TTL_SECONDS: "60"
   AWS_REGION: us-east-1
-  DYNAMODB_TABLE: Candidates
-  S3_BUCKET: resume-screening-platform-resumes
+  DYNAMODB_TABLE: candidates
+  HR_TABLE: hr-users
+  S3_BUCKET_NAME: srs-platform

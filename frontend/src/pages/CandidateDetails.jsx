@@ -1,19 +1,31 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, Mail, MapPin, Phone } from 'lucide-react';
-import { fetchCandidate } from '../api/candidates';
+import { fetchCandidate, fetchCandidateResume } from '../api/candidates';
 import LoadingState from '../components/LoadingState.jsx';
 import StatusBadge from '../components/StatusBadge.jsx';
 
 export default function CandidateDetails() {
   const { id } = useParams();
   const [candidate, setCandidate] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCandidate(id)
-      .then((result) => setCandidate(result.data))
-      .finally(() => setLoading(false));
+    async function loadCandidate() {
+      try {
+        const result = await fetchCandidate(id);
+        setCandidate(result.data);
+        const resume = await fetchCandidateResume(id);
+        setResumeUrl(resume.url);
+      } catch {
+        setCandidate(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCandidate();
   }, [id]);
 
   if (loading) return <LoadingState label="Loading candidate profile" />;
@@ -163,8 +175,10 @@ export default function CandidateDetails() {
         </article>
 
         <article className="wide-card">
-          <h2>Resume Path</h2>
-          <p>{candidate.resumeUrl}</p>
+          <h2>Resume</h2>
+          {resumeUrl
+            ? renderLink('View resume', resumeUrl)
+            : <p>Resume file is not available.</p>}
         </article>
       </div>
     </section>

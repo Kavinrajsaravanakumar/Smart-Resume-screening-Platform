@@ -1,48 +1,64 @@
 import { v4 as uuidv4 } from 'uuid';
-import db from '../repositories/localJsonRepository.js';
+import dynamoService from '../services/dynamoService.js';
 
-export async function create(candidate) {
-  const record = {
+function deriveStatus(rankingScore) {
+  if (rankingScore >= 75) return 'shortlisted';
+  if (rankingScore < 40) return 'rejected';
+  return 'review';
+}
+
+function buildCandidateRecord(candidate) {
+  const fullName = candidate.fullName || candidate.name || 'Unnamed Candidate';
+
+  return {
     candidateId: uuidv4(),
     firstName: candidate.firstName || '',
     lastName: candidate.lastName || '',
-    fullName: candidate.fullName || candidate.name,
-    name: candidate.fullName || candidate.name,
+    fullName,
     email: candidate.email,
     phone: candidate.phone,
-    linkedIn: candidate.linkedIn || '',
-    github: candidate.github || '',
-    portfolio: candidate.portfolio || '',
-    location: candidate.location || '',
-    summary: candidate.summary || '',
     skills: candidate.skills || [],
-    skillGroups: candidate.skillGroups || {},
     education: candidate.education || 'Not specified',
-    educationDetails: candidate.educationDetails || {},
     experience: candidate.experience || 0,
-    experienceDetails: candidate.experienceDetails || [],
-    projects: candidate.projects || [],
-    certifications: candidate.certifications || [],
-    achievements: candidate.achievements || {},
-    additionalInfo: candidate.additionalInfo || {},
     rankingScore: candidate.rankingScore,
-    scoreBreakdown: candidate.scoreBreakdown || {},
-    status: candidate.status || (candidate.rankingScore >= 75 ? 'shortlisted' : candidate.rankingScore < 40 ? 'rejected' : 'review'),
-    resumeUrl: candidate.resumeUrl,
-    createdAt: new Date().toISOString()
+    status: candidate.status || deriveStatus(candidate.rankingScore),
+    resumeS3Key: candidate.resumeS3Key,
+    createdAt: new Date().toISOString(),
+    parsedProfile: {
+      linkedIn: candidate.linkedIn || '',
+      github: candidate.github || '',
+      portfolio: candidate.portfolio || '',
+      location: candidate.location || '',
+      summary: candidate.summary || '',
+      skillGroups: candidate.skillGroups || {},
+      educationDetails: candidate.educationDetails || {},
+      experienceDetails: candidate.experienceDetails || [],
+      projects: candidate.projects || [],
+      certifications: candidate.certifications || [],
+      achievements: candidate.achievements || {},
+      additionalInfo: candidate.additionalInfo || {},
+      scoreBreakdown: candidate.scoreBreakdown || {}
+    }
   };
-  await db.insert(record);
+}
+
+export async function create(candidate) {
+  const record = buildCandidateRecord(candidate);
+  await dynamoService.createCandidate(record);
   return record;
 }
 
-export async function findAll() {
-  return db.findAll();
+export async function findAll(options = {}) {
+  return dynamoService.getCandidates(options);
 }
 
 export async function findById(candidateId) {
-  return db.findById(candidateId);
+  return dynamoService.getCandidate(candidateId);
 }
 
 export async function remove(candidateId) {
-  return db.remove(candidateId);
+  const existing = await dynamoService.getCandidate(candidateId);
+  if (!existing) return null;
+  await dynamoService.deleteCandidate(candidateId);
+  return existing;
 }

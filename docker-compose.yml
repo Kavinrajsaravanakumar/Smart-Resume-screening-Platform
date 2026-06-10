@@ -6,9 +6,6 @@ services:
       - ./backend/.env
     ports:
       - "5000:5000"
-    volumes:
-      - backend_uploads:/app/uploads
-      - backend_data:/app/data
 
   frontend:
     build: ./frontend
@@ -39,6 +36,4 @@ services:
       - grafana_data:/var/lib/grafana
 
 volumes:
-  backend_uploads:
-  backend_data:
   grafana_data:

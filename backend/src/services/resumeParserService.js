@@ -1,4 +1,3 @@
-import fs from 'fs/promises';
 import path from 'path';
 import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
@@ -172,20 +171,19 @@ function extractAdditionalInfo(text) {
   };
 }
 
-async function extractPdf(filePath) {
-  const buffer = await fs.readFile(filePath);
+async function extractPdf(buffer) {
   const result = await pdf(buffer);
   return result.text;
 }
 
-async function extractDocx(filePath) {
-  const result = await mammoth.extractRawText({ path: filePath });
+async function extractDocx(buffer) {
+  const result = await mammoth.extractRawText({ buffer });
   return result.value;
 }
 
-async function extractWithOcrFallback(filePath) {
+async function extractWithOcrFallback(buffer) {
   try {
-    const result = await Tesseract.recognize(filePath, 'eng');
+    const result = await Tesseract.recognize(buffer, 'eng');
     return result.data?.text || '';
   } catch {
     return '';
@@ -193,12 +191,12 @@ async function extractWithOcrFallback(filePath) {
 }
 
 const resumeParserService = {
-  async extractCandidateInfo(filePath, mimeType) {
-    const extension = path.extname(filePath).toLowerCase();
+  async extractCandidateInfo(buffer, mimeType, originalName = '') {
+    const extension = path.extname(originalName).toLowerCase();
     const isPdf = extension === '.pdf' || (extension !== '.docx' && mimeType === 'application/pdf');
-    let text = isPdf ? await extractPdf(filePath) : await extractDocx(filePath);
+    let text = isPdf ? await extractPdf(buffer) : await extractDocx(buffer);
     if (!text || text.trim().length < 80) {
-      text = `${text || ''}\n${await extractWithOcrFallback(filePath)}`.trim();
+      text = `${text || ''}\n${await extractWithOcrFallback(buffer)}`.trim();
     }
 
     const lines = splitLines(text);
