@@ -56,19 +56,11 @@ pipeline {
                 docker rm resume-backend || true
 
                 docker run -d \
-                  --name resume-backend \
-                  -p 5000:5000 \
-                  --restart unless-stopped \
-                  -e NODE_ENV=production \
-                  -e AWS_REGION=$AWS_REGION \
-                  -e S3_BUCKET_NAME=$S3_BUCKET_NAME \
-                  -e DYNAMODB_TABLE=$DYNAMODB_TABLE \
-                  -e HR_TABLE=$HR_TABLE \
-                  -e FRONTEND_ORIGIN=$FRONTEND_ORIGIN \
-                  -e JWT_SECRET=$JWT_SECRET \
-                  -e SNS_TOPIC_ARN=$SNS_TOPIC_ARN \
-                  -e S3_PRESIGNED_URL_EXPIRY_SECONDS=900 \
-                  $REGISTRY/backend:$BUILD_NUMBER
+                --name resume-backend \
+                -p 5000:5000 \
+                --restart unless-stopped \
+                --env-file /home/ubuntu/Smart-Resume-screening-Platform/backend/.env \
+                $REGISTRY/backend:$BUILD_NUMBER
                 '''
             }
         }
