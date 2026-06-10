@@ -8,7 +8,7 @@ Full-stack cloud-native resume screening demo for HR teams. Candidates upload re
 - Backend: Node.js, Express.js, MVC structure
 - Resume parsing: PDF and DOCX extraction
 - Storage: local JSON for demos, AWS-ready DynamoDB/S3 templates
-- DevOps: Docker, Docker Compose, Kubernetes, Jenkins, Terraform, Prometheus, Grafana
+- DevOps: Docker, Docker Compose, Kubernetes, Jenkins, Terraform,
 
 ## Project Structure
 
