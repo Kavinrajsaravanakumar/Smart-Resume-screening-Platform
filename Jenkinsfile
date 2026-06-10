@@ -7,7 +7,7 @@ pipeline {
         S3_BUCKET_NAME = 'srs-platform'
         DYNAMODB_TABLE = 'candidates'
         HR_TABLE = 'hr-users'
-        FRONTEND_ORIGIN = 'https://main.d1234567890.amplifyapp.com'
+        FRONTEND_ORIGIN = 'FRONTEND_ORIGIN=https://main.d2g1dv29g79yh0.amplifyapp.com'
     }
 
     stages {
