@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "project_name" {
+  description = "Project prefix for AWS resources."
+  type        = string
+  default     = "srs-platform"
+}
+
 variable "ec2_instance_type" {
   description = "EC2 instance type for the application host."
   type        = string
