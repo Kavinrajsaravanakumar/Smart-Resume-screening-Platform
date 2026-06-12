@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "candidates" {
-  name         = "Candidates"
+  name         = "candidates"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "candidateId"
 
@@ -40,5 +40,22 @@ resource "aws_dynamodb_table" "candidates" {
   tags = {
     Project = var.project_name
     Purpose = "candidate-metadata"
+  }
+}
+
+resource "aws_dynamodb_table" "hr_users" {
+
+  name         = "hr-users"
+  billing_mode = "PAY_PER_REQUEST"
+
+  hash_key = "hrUserId"
+
+  attribute {
+    name = "hrUserId"
+    type = "S"
+  }
+
+  tags = {
+    Name = "hr-users"
   }
 }

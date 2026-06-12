@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "resumes" {
-  bucket = "${var.project_name}-resumes"
+  bucket = "srs-platform"
 
   tags = {
     Project = var.project_name
