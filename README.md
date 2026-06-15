@@ -439,6 +439,6 @@ Smart-Resume-Screening-Platform
 
 ## 👨‍💻 Author
 
-**Kavin Raj**
+**Kavinraj S**
 
 Cloud | DevOps | Full Stack Development | AWS | Terraform | Docker | Jenkins
