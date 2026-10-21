@@ -322,7 +322,7 @@ export default function Login() {
               </span>
               <span className="text-xs text-surface-400">·</span>
               <span className="text-xs text-surface-500 dark:text-surface-400">
-                Resume parsing by Gemini AI
+                Resume parsing
               </span>
             </div>
           </div>

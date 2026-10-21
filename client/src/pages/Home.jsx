@@ -65,7 +65,8 @@ export default function Home() {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl gradient-brand flex items-center justify-center shadow-sm">
-              <FileText className="w-[18px] h-[18px] text-white" />
+              {/* <FileText className="w-[18px] h-[18px] text-white" /> */}
+              <img src="./logo.svg" alt="" />
             </div>
             <div className="leading-none">
               <span className="text-sm font-bold text-surface-900 dark:text-white tracking-tight block">
@@ -83,11 +84,10 @@ export default function Home() {
               <a
                 key={i}
                 href={link.href}
-                className={`text-sm font-medium transition-colors ${
-                  i === 0
+                className={`text-sm font-medium transition-colors ${i === 0
                     ? 'text-brand-600 dark:text-brand-400'
                     : 'text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 {link.label}
               </a>
@@ -238,7 +238,7 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 1.0 }}
-                className="absolute -top-2 -right-2 z-20"
+                className="absolute -top-5 -right-2 z-20"
               >
                 <div className="bg-gradient-to-br from-brand-500 to-brand-700 rounded-2xl px-5 py-3 shadow-lg shadow-brand-500/25">
                   <span className="text-[10px] text-brand-100 font-medium block">AI Match</span>
@@ -268,9 +268,8 @@ export default function Home() {
                       key={i}
                       className="bg-surface-50 dark:bg-surface-800 rounded-xl p-3 text-center"
                     >
-                      <div className={`w-2.5 h-2.5 rounded-full mx-auto mb-2 ${
-                        i === 0 ? 'bg-brand-500' : i === 1 ? 'bg-emerald-500' : i === 2 ? 'bg-amber-500' : 'bg-red-400'
-                      }`} />
+                      <div className={`w-2.5 h-2.5 rounded-full mx-auto mb-2 ${i === 0 ? 'bg-brand-500' : i === 1 ? 'bg-emerald-500' : i === 2 ? 'bg-amber-500' : 'bg-red-400'
+                        }`} />
                       <p className="text-xl font-bold text-surface-900 dark:text-white">{stat.value}</p>
                       <p className="text-[10px] text-surface-400 mt-0.5">{stat.label}</p>
                     </div>
@@ -315,7 +314,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.2 }}
-                className="absolute -bottom-4 left-8 z-20"
+                className="absolute -bottom-5 left-9 z-20"
               >
                 <div className="bg-white dark:bg-surface-800 rounded-2xl px-5 py-3 shadow-glass-lg border border-surface-100 dark:border-surface-700 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center">
@@ -517,7 +516,7 @@ export default function Home() {
             </span>
             <span className="text-xs text-surface-400">·</span>
             <span className="text-xs text-surface-500 dark:text-surface-400">
-              Resume parsing by Gemini AI
+              Resume parsing
             </span>
           </div>
           <p className="text-xs text-surface-400">

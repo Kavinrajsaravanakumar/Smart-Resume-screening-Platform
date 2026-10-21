@@ -35,7 +35,8 @@ export default function Sidebar() {
     >
       <div className="flex items-center gap-3 px-4 h-16 border-b border-surface-200/50 dark:border-surface-700/50">
         <div className="flex-shrink-0 w-9 h-9 rounded-xl gradient-brand flex items-center justify-center shadow-glass">
-          <FileText className="w-5 h-5 text-white" />
+          <img src="./logo.svg" alt="" />
+
         </div>
         <AnimatePresence>
           {!collapsed && (
@@ -99,13 +100,10 @@ export default function Sidebar() {
       <div className="p-2 border-t border-surface-200/50 dark:border-surface-700/50">
         {!collapsed && (
           <div className="mx-3 mb-3 p-3 rounded-xl bg-gradient-to-br from-brand-500/10 to-brand-600/5 dark:from-brand-500/5 dark:to-brand-600/5 border border-brand-500/10">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 ">
               <Sparkles className="w-4 h-4 text-brand-500" />
-              <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">AI Powered</span>
+              <span className="text-xs font-semibold text-brand-700 dark:text-brand-300">AI Powered Resume parsing</span>
             </div>
-            <p className="text-[10px] text-surface-500 dark:text-surface-400 leading-relaxed">
-              Resume parsing powered by Gemini AI
-            </p>
           </div>
         )}
         <button
