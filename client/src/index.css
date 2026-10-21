@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply m-0 font-sans antialiased;
+  }
+
+  a {
+    @apply no-underline;
+    color: inherit;
+  }
+
+  button, input {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/80 dark:bg-surface-800/80 backdrop-blur-xl border border-white/20 dark:border-surface-700/50;
+  }
+
+  .glass-strong {
+    @apply bg-white/90 dark:bg-surface-800/90 backdrop-blur-2xl border border-white/30 dark:border-surface-700/60;
+  }
+
+  .gradient-brand {
+    @apply bg-gradient-to-br from-brand-500 to-brand-700;
+  }
+
+  .gradient-brand-soft {
+    @apply bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-950/50 dark:to-brand-900/30;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-600 to-brand-400 dark:from-brand-400 dark:to-brand-300 bg-clip-text text-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    @apply w-1.5;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-surface-300 dark:bg-surface-600 rounded-full;
+  }
+}
+
+@layer utilities {
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+}
