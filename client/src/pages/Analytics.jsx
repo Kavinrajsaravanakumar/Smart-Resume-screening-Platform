@@ -126,7 +126,7 @@ export default function Analytics() {
         description="Comprehensive insights across your recruitment pipeline"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 min-w-0">
         {[
           { label: 'Total Candidates', value: totalCandidates, icon: BarChart3, color: 'brand' },
           { label: 'Avg. Match Score', value: `${analyticsData?.averageScore || 0}%`, icon: TrendingUp, color: 'emerald' },
@@ -138,7 +138,7 @@ export default function Analytics() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="glass rounded-2xl p-5 shadow-soft"
+            className="glass rounded-2xl p-5 shadow-soft min-w-0"
           >
             <div className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -158,20 +158,20 @@ export default function Analytics() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <GlassCard className="p-6" hover={false}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 min-w-0">
+        <GlassCard className="p-6 min-w-0" hover={false}>
           <h3 className="text-base font-bold text-surface-900 dark:text-white mb-4">Candidate Status Distribution</h3>
           <StatusPieChart data={statusData} />
         </GlassCard>
 
-        <GlassCard className="p-6" hover={false}>
+        <GlassCard className="p-6 min-w-0" hover={false}>
           <h3 className="text-base font-bold text-surface-900 dark:text-white mb-4">Top 10 Pipeline Skills</h3>
           <SkillsBarChart data={skillData} />
         </GlassCard>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <GlassCard className="p-6" hover={false}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 min-w-0">
+        <GlassCard className="p-6 min-w-0" hover={false}>
           <h3 className="text-base font-bold text-surface-900 dark:text-white mb-4">Experience Distribution</h3>
           <GenericBarChart data={experienceData} />
         </GlassCard>

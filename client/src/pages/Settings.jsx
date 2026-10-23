@@ -455,9 +455,9 @@ export default function Settings() {
       />
 
       {/* ── Top Section: User Account (id="user-account") & Appearance ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
         {/* User Account Section (Col Span 2) */}
-        <div id="user-account" className="lg:col-span-2">
+        <div id="user-account" className="lg:col-span-2 min-w-0">
           <GlassCard className="p-6 h-full flex flex-col justify-between" hover={false}>
             <div>
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-surface-200/50 dark:border-surface-700/50">
@@ -632,7 +632,7 @@ export default function Settings() {
         </div>
 
         {/* Appearance Card (Col Span 1) */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 min-w-0">
           <GlassCard className="p-6 h-full flex flex-col justify-between" hover={false}>
             <div>
               <div className="flex items-center gap-3 mb-6 pb-4 border-b border-surface-200/50 dark:border-surface-700/50">
@@ -834,7 +834,7 @@ export default function Settings() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 min-w-0">
                 {[
                   { key: 'skills', label: 'Skills Match', desc: 'Required & parsed skills' },
                   { key: 'experience', label: 'Experience Years', desc: 'Work history depth' },
@@ -846,7 +846,7 @@ export default function Settings() {
                   return (
                     <div
                       key={key}
-                      className="p-3 rounded-xl bg-white dark:bg-surface-800 border border-surface-200/60 dark:border-surface-700/60 space-y-2 shadow-xs"
+                      className="p-3 rounded-xl bg-white dark:bg-surface-800 border border-surface-200/60 dark:border-surface-700/60 space-y-2 shadow-xs min-w-0"
                     >
                       <div className="flex items-center justify-between text-xs">
                         <span className="font-semibold text-surface-900 dark:text-white">

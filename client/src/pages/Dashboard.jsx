@@ -177,7 +177,7 @@ export default function Dashboard() {
       </motion.div>
 
       {/* Top Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 min-w-0">
         <StatCard
           icon={Users}
           label="Total Candidates"
@@ -238,8 +238,8 @@ export default function Dashboard() {
       ) : (
         <>
           {/* Top Candidates and Recent Activity Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <GlassCard className="lg:col-span-2 p-6" hover={false}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 min-w-0">
+            <GlassCard className="lg:col-span-2 p-6 min-w-0" hover={false}>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-bold text-surface-900 dark:text-white">Top Ranked Candidates</h2>
                 <Link to="/candidates" className="text-sm text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1 no-underline">
@@ -326,8 +326,8 @@ export default function Dashboard() {
           </div>
 
           {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <GlassCard className="p-6" hover={false}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 min-w-0">
+            <GlassCard className="p-6 min-w-0" hover={false}>
               <h2 className="text-base font-bold text-surface-900 dark:text-white mb-4">Candidate Status Distribution</h2>
               <StatusPieChart data={pieData} />
             </GlassCard>

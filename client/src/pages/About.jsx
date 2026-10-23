@@ -144,7 +144,7 @@ export default function About() {
             How It Works in 4 Simple Steps
           </h3>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 min-w-0">
           {howItWorksSteps.map(({ step, icon: Icon, title, desc }) => (
             <motion.div
               key={step}
@@ -167,9 +167,9 @@ export default function About() {
       </GlassCard>
 
       {/* ── Two-Column Responsive Grid: Who It Is For & Key Benefits ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 min-w-0">
         {/* Who It Is For */}
-        <GlassCard className="p-6 h-full flex flex-col justify-between" hover={false}>
+        <GlassCard className="p-6 h-full flex flex-col justify-between min-w-0" hover={false}>
           <div>
             <div className="flex items-center gap-2 mb-6">
               <Users className="w-5 h-5 text-brand-500" />
@@ -197,7 +197,7 @@ export default function About() {
         </GlassCard>
 
         {/* Key Benefits */}
-        <GlassCard className="p-6 h-full flex flex-col justify-between" hover={false}>
+        <GlassCard className="p-6 h-full flex flex-col justify-between min-w-0" hover={false}>
           <div>
             <div className="flex items-center gap-2 mb-6">
               <Target className="w-5 h-5 text-brand-500" />
@@ -226,9 +226,9 @@ export default function About() {
       </div>
 
       {/* ── Two-Column Grid: FAQs & Security/Contact ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
         {/* FAQs */}
-        <GlassCard className="lg:col-span-2 p-6" hover={false}>
+        <GlassCard className="lg:col-span-2 p-6 min-w-0" hover={false}>
           <div className="flex items-center gap-2 mb-4">
             <HelpCircle className="w-5 h-5 text-brand-500" />
             <h3 className="text-base font-bold text-surface-900 dark:text-white">
