@@ -1,31 +1,53 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, CheckCircle, X, CloudUpload } from 'lucide-react';
+import { FileText, CheckCircle, X, CloudUpload, AlertCircle } from 'lucide-react';
+import api from '../../api.js';
+import { useToast } from '../../context/ToastContext.jsx';
 
 export default function DragDropUpload({ onUpload }) {
   const [files, setFiles] = useState([]);
   const [isDragOver, setIsDragOver] = useState(false);
+  const toast = useToast();
 
-  const simulateUpload = useCallback((newFiles) => {
-    newFiles.forEach((file) => {
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 20 + 5;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-          setFiles(prev => prev.map(f =>
-            f.file === file ? { ...f, status: 'complete', progress: 100 } : f
-          ));
-          onUpload?.(file);
-        } else {
-          setFiles(prev => prev.map(f =>
-            f.file === file ? { ...f, progress: Math.min(progress, 99) } : f
-          ));
-        }
-      }, 300);
-    });
-  }, [onUpload]);
+  const uploadFile = useCallback(async (fileObj) => {
+    const file = fileObj.file;
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    // Simulated progress increment while uploading
+    let currentProgress = 10;
+    const progressInterval = setInterval(() => {
+      currentProgress = Math.min(currentProgress + 15, 90);
+      setFiles(prev =>
+        prev.map(f => (f.file === file ? { ...f, progress: currentProgress } : f))
+      );
+    }, 200);
+
+    try {
+      const res = await api.upload('/resumes/upload', formData);
+      clearInterval(progressInterval);
+      setFiles(prev =>
+        prev.map(f =>
+          f.file === file
+            ? { ...f, status: 'complete', progress: 100, candidate: res?.data }
+            : f
+        )
+      );
+      toast?.success?.(`Parsed resume for ${res?.data?.name || file.name}`);
+      onUpload?.(file, res?.data);
+    } catch (err) {
+      clearInterval(progressInterval);
+      const errMsg = err?.response?.data?.message || err.message || 'Upload failed';
+      setFiles(prev =>
+        prev.map(f =>
+          f.file === file
+            ? { ...f, status: 'error', progress: 0, error: errMsg }
+            : f
+        )
+      );
+      toast?.error?.(`Upload error: ${errMsg}`);
+    }
+  }, [onUpload, toast]);
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
@@ -42,18 +64,20 @@ export default function DragDropUpload({ onUpload }) {
     setIsDragOver(false);
     const droppedFiles = Array.from(e.dataTransfer.files).filter(f => f.name.endsWith('.pdf'));
     if (droppedFiles.length > 0) {
-      setFiles(prev => [...prev, ...droppedFiles.map(f => ({ file: f, status: 'uploading', progress: 0 }))]);
-      simulateUpload(droppedFiles);
+      const newItems = droppedFiles.map(f => ({ file: f, status: 'uploading', progress: 10 }));
+      setFiles(prev => [...prev, ...newItems]);
+      newItems.forEach(item => uploadFile(item));
     }
-  }, [simulateUpload]);
+  }, [uploadFile]);
 
   const handleFileSelect = useCallback((e) => {
     const selectedFiles = Array.from(e.target.files).filter(f => f.name.endsWith('.pdf'));
     if (selectedFiles.length > 0) {
-      setFiles(prev => [...prev, ...selectedFiles.map(f => ({ file: f, status: 'uploading', progress: 0 }))]);
-      simulateUpload(selectedFiles);
+      const newItems = selectedFiles.map(f => ({ file: f, status: 'uploading', progress: 10 }));
+      setFiles(prev => [...prev, ...newItems]);
+      newItems.forEach(item => uploadFile(item));
     }
-  }, [simulateUpload]);
+  }, [uploadFile]);
 
   const removeFile = (fileToRemove) => {
     setFiles(prev => prev.filter(f => f.file !== fileToRemove));
@@ -101,7 +125,7 @@ export default function DragDropUpload({ onUpload }) {
       </motion.div>
 
       <AnimatePresence>
-        {files.map(({ file, status, progress }, idx) => (
+        {files.map(({ file, status, progress, candidate, error }, idx) => (
           <motion.div
             key={`${file.name}-${idx}`}
             initial={{ opacity: 0, height: 0 }}
@@ -113,19 +137,24 @@ export default function DragDropUpload({ onUpload }) {
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                 status === 'complete'
                   ? 'bg-emerald-100 dark:bg-emerald-900/30'
+                  : status === 'error'
+                  ? 'bg-red-100 dark:bg-red-900/30'
                   : 'bg-brand-100 dark:bg-brand-900/30'
               }`}>
                 {status === 'complete' ? (
                   <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                ) : status === 'error' ? (
+                  <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
                 ) : (
                   <FileText className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-surface-900 dark:text-white truncate">{file.name}</p>
-                <p className="text-xs text-surface-500 dark:text-surface-400">
+                <p className={`text-xs ${status === 'error' ? 'text-red-500 dark:text-red-400 font-medium' : 'text-surface-500 dark:text-surface-400'}`}>
                   {(file.size / 1024).toFixed(0)} KB
-                  {status === 'complete' && ' \u00b7 Parsed successfully'}
+                  {status === 'complete' && ` · ${candidate?.score ? `Scored ${candidate.score}%` : 'Parsed successfully'}`}
+                  {status === 'error' && ` · ${error || 'Upload failed'}`}
                 </p>
               </div>
               <button

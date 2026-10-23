@@ -9,7 +9,10 @@ import {
   ArrowRight,
   Shield,
   Zap,
+  Sun,
+  Moon,
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext.jsx';
 
 /* ── Floating dashboard mockup data ── */
 const topCandidates = [
@@ -52,6 +55,8 @@ const navLinks = [
 ];
 
 export default function Home() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <div className="min-h-screen bg-white dark:bg-surface-950 font-sans selection:bg-brand-200 selection:text-brand-900">
       {/* ─── NAVBAR ─── */}
@@ -94,17 +99,27 @@ export default function Home() {
             ))}
           </nav>
 
-          {/* Auth buttons */}
-          <div className="flex items-center gap-3">
+          {/* Auth and Theme buttons */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="p-2.5 rounded-xl text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-white hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-surface-600" />}
+            </motion.button>
             <Link
               to="/login"
-              className="px-5 py-2 text-sm font-semibold text-surface-700 dark:text-surface-300 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+              className="px-4 sm:px-5 py-2 text-sm font-semibold text-surface-700 dark:text-surface-300 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="px-5 py-2 text-sm font-semibold text-white rounded-xl gradient-brand shadow-sm shadow-brand-500/20 hover:shadow-brand-500/30 transition-shadow"
+              className="px-4 sm:px-5 py-2 text-sm font-semibold text-white rounded-xl gradient-brand shadow-sm shadow-brand-500/20 hover:shadow-brand-500/30 transition-shadow"
             >
               Sign up
             </Link>
@@ -238,7 +253,7 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 1.0 }}
-                className="absolute -top-5 -right-2 z-20"
+                className="absolute -top-6 -right-2 z-20"
               >
                 <div className="bg-gradient-to-br from-brand-500 to-brand-700 rounded-2xl px-5 py-3 shadow-lg shadow-brand-500/25">
                   <span className="text-[10px] text-brand-100 font-medium block">AI Match</span>
@@ -419,7 +434,6 @@ export default function Home() {
                   'End-to-end encrypted resume storage',
                   'Role-based access control',
                   'SOC 2 compliant infrastructure',
-                  'Auto-scaling with Kubernetes',
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center flex-shrink-0">

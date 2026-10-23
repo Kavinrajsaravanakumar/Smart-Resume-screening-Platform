@@ -1,20 +1,25 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext.jsx';
-import { Sun, Moon, Bell, Search } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { Sun, Moon, Bell, Search, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const pageTitles = {
   '/': 'Dashboard',
+  '/dashboard': 'Dashboard',
   '/candidates': 'Candidates',
   '/upload': 'Upload Resume',
   '/analytics': 'Analytics',
   '/settings': 'Settings',
   '/about': 'About',
+  '/about-platform': 'About Platform',
 };
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const getTitle = () => {
     const path = location.pathname;
@@ -22,6 +27,21 @@ export default function Navbar() {
     if (pageTitles[path]) return pageTitles[path];
     return 'Dashboard';
   };
+
+  const getInitials = (name) => {
+    if (!name) return 'U';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const displayName = user?.name || user?.email?.split('@')[0] || 'User';
+  const displayRole = user?.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : 'HR Recruiter';
 
   return (
     <header className="h-16 glass-strong border-b border-surface-200/50 dark:border-surface-700/50 flex items-center justify-between px-6 sticky top-0 z-20">
@@ -51,22 +71,49 @@ export default function Navbar() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={toggleTheme}
+          aria-label="Toggle theme"
           className="p-2.5 rounded-xl text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-white hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
         >
-          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          {theme === 'dark' ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5" />}
         </motion.button>
 
         <div className="w-px h-8 bg-surface-200 dark:bg-surface-700 mx-1" />
 
-        <div className="flex items-center gap-3">
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => {
+            navigate('/settings#user-account');
+            const el = document.getElementById('user-account');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          className="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
+          title="Go to User Account settings"
+        >
           <div className="w-9 h-9 rounded-xl gradient-brand flex items-center justify-center text-white text-sm font-bold shadow-glass">
-            SM
+            {getInitials(displayName)}
           </div>
-          <div className="hidden lg:block">
-            <p className="text-sm font-semibold text-surface-900 dark:text-white leading-tight">Sarah Mitchell</p>
-            <p className="text-xs text-surface-500 dark:text-surface-400">HR Director</p>
+          <div className="hidden lg:block text-left">
+            <p className="text-sm font-semibold text-surface-900 dark:text-white leading-tight">
+              {displayName}
+            </p>
+            <p className="text-xs text-surface-500 dark:text-surface-400">
+              {displayRole}
+            </p>
           </div>
-        </div>
+        </motion.div>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleLogout}
+          title="Sign out"
+          className="p-2.5 rounded-xl text-surface-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors ml-1"
+        >
+          <LogOut className="w-4 h-4" />
+        </motion.button>
       </div>
     </header>
   );

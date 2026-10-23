@@ -14,8 +14,16 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 
 function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-900">
+        <div className="w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -90,6 +98,14 @@ export default function App() {
       />
       <Route
         path="/about-platform"
+        element={
+          <ProtectedRoute>
+            <AppLayout><About /></AppLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/about"
         element={
           <ProtectedRoute>
             <AppLayout><About /></AppLayout>

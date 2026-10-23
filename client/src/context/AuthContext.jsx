@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import api from '../api';
 
 const AuthContext = createContext();
 
@@ -11,66 +12,71 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
+  const [loading, setLoading] = useState(true);
 
-  const login = useCallback((email, password) => {
-    // Simulated authentication — replace with real API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!email || !password) {
-          reject(new Error('Email and password are required'));
-          return;
+  // Validate existing token on load
+  useEffect(() => {
+    async function checkAuth() {
+      const token = localStorage.getItem('srs-auth-token');
+      if (token) {
+        try {
+          const res = await api.get('/auth/me');
+          if (res?.data) {
+            setUser(res.data);
+            localStorage.setItem('srs-auth-user', JSON.stringify(res.data));
+          }
+        } catch (err) {
+          console.warn('Session expired or server unavailable:', err.message);
         }
-        const userData = {
-          id: crypto.randomUUID(),
-          email,
-          firstName: email.split('@')[0].split('.')[0],
-          lastName: email.split('@')[0].split('.')[1] || '',
-          role: 'HR Recruiter',
-          avatar: null,
-          loginAt: new Date().toISOString(),
-        };
-        setUser(userData);
-        localStorage.setItem('srs-auth-user', JSON.stringify(userData));
-        resolve(userData);
-      }, 800);
-    });
+      }
+      setLoading(false);
+    }
+    checkAuth();
   }, []);
 
-  const register = useCallback((data) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!data.email || !data.password) {
-          reject(new Error('All fields are required'));
-          return;
-        }
-        if (data.password !== data.confirmPassword) {
-          reject(new Error('Passwords do not match'));
-          return;
-        }
-        const userData = {
-          id: crypto.randomUUID(),
-          email: data.email,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          role: data.role || 'HR Recruiter',
-          company: data.company || '',
-          avatar: null,
-          loginAt: new Date().toISOString(),
-        };
-        setUser(userData);
-        localStorage.setItem('srs-auth-user', JSON.stringify(userData));
-        resolve(userData);
-      }, 800);
-    });
+  const login = useCallback(async (email, password) => {
+    if (!email || !password) {
+      throw new Error('Email and password are required');
+    }
+    const res = await api.post('/auth/login', { email, password });
+    const { user: userData, token } = res.data;
+    setUser(userData);
+    localStorage.setItem('srs-auth-token', token);
+    localStorage.setItem('srs-auth-user', JSON.stringify(userData));
+    return userData;
+  }, []);
+
+  const register = useCallback(async (data) => {
+    if (!data.email || !data.password) {
+      throw new Error('All fields are required');
+    }
+    if (data.confirmPassword && data.password !== data.confirmPassword) {
+      throw new Error('Passwords do not match');
+    }
+    const res = await api.post('/auth/register', data);
+    const { user: userData, token } = res.data;
+    setUser(userData);
+    localStorage.setItem('srs-auth-token', token);
+    localStorage.setItem('srs-auth-user', JSON.stringify(userData));
+    return userData;
   }, []);
 
   const logout = useCallback(() => {
     setUser(null);
+    localStorage.removeItem('srs-auth-token');
     localStorage.removeItem('srs-auth-user');
   }, []);
 
+  const updateUser = useCallback((updatedData) => {
+    setUser(prev => {
+      const merged = { ...prev, ...updatedData };
+      localStorage.setItem('srs-auth-user', JSON.stringify(merged));
+      return merged;
+    });
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
