@@ -12,6 +12,7 @@ import {
   Building2,
   ArrowRight,
   Shield,
+  ArrowLeft,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -143,7 +144,17 @@ export default function Login() {
                 </div>
               </div>
             </motion.div>
-          </div>
+            </div>
+            <motion.button
+            type="button"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            className="max-w-xs mt-2 py-3 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 text-surface-700 dark:text-surface-300 font-semibold text-sm hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors flex items-center justify-center gap-2"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="w-4 h-4" />
+             Back to Home 
+          </motion.button>
         </div>
       </div>
 

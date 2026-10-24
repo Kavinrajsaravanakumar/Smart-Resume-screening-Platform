@@ -34,29 +34,32 @@ export default function Sidebar({ collapsed: propCollapsed, setCollapsed: propSe
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="h-screen flex-shrink-0 flex flex-col glass-strong shadow-soft-lg border-r border-surface-200/50 dark:border-surface-700/50 z-30 select-none overflow-hidden"
     >
-      <div className={`flex items-center ${collapsed ? 'justify-center px-2' : 'gap-3 px-4'} h-16 border-b border-surface-200/50 dark:border-surface-700/50 flex-shrink-0`}>
-        <div className="flex-shrink-0 w-9 h-9 rounded-xl gradient-brand flex items-center justify-center shadow-glass">
-          <img src="./logo.svg" alt="SRS Logo" className="w-5 h-5 object-contain" />
+      <a href="/Dashboard">
+        <div className={`flex items-center ${collapsed ? 'justify-center px-2' : 'gap-3 px-4'} h-16 border-b border-surface-200/50 dark:border-surface-700/50 flex-shrink-0`}>
+          <div className="flex-shrink-0 w-9 h-9 rounded-xl gradient-brand flex items-center justify-center shadow-glass">
+            <img src="./logo.svg" alt="SRS Logo" className="w-5 h-5 object-contain" />
+          </div>
+          <AnimatePresence>
+            {!collapsed && (
+
+              <motion.div
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
+                exit={{ opacity: 0, width: 0 }}
+                className="overflow-hidden whitespace-nowrap"
+              >
+                <span className="text-sm font-bold text-surface-900 dark:text-white tracking-tight">
+                  Smart Resume
+                </span>
+                <br />
+                <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400 tracking-widest uppercase">
+                  Screening
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        <AnimatePresence>
-          {!collapsed && (
-            <motion.div
-              initial={{ opacity: 0, width: 0 }}
-              animate={{ opacity: 1, width: 'auto' }}
-              exit={{ opacity: 0, width: 0 }}
-              className="overflow-hidden whitespace-nowrap"
-            >
-              <span className="text-sm font-bold text-surface-900 dark:text-white tracking-tight">
-                Smart Resume
-              </span>
-              <br />
-              <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400 tracking-widest uppercase">
-                Screening
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      </a>
 
       <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto scrollbar-thin">
         {navItems.map(({ path, label, icon: Icon }) => {
